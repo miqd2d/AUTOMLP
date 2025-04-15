@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <header>
+        <h1>Welcome, {{ username }}!</h1>
+        <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
+    </header>
+    
+    <div class="dashboard-content">
+        <div class="upload-section">
+            <h2>Create New Model</h2>
+            <form method="POST" action="{{ url_for('process') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="prompt">Model Prompt</label>
+                    <textarea id="prompt" name="prompt" placeholder="Describe what you want the model to do..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="model_type">Model Type</label>
+                    <select id="model_type" name="model_type">
+                        <option value="xgboost">XGBoost</option>
+                        <option value="chatgpt-4o">ChatGPT-4o</option>
+                        <option value="llama-4">Llama-4</option>
+                        <option value="random-forest">Random Forest</option>
+                        <option value="neural-network">Neural Network</option>
+                    </select>
+                </div>
+                
+                <div class="form-group file-upload">
+                    <label for="file">Dataset (CSV only)</label>
+                    <input type="file" id="file" name="file" accept=".csv" required>
+                    <div class="file-upload-label">Choose file or drag here</div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Generate Model</button>
+            </form>
+        </div>
+        
+        <div class="results-section">
+            <h2>Model Results</h2>
+            <div class="results-placeholder">
+                <img src="{{ url_for('static', filename='images/neural-network.svg') }}" alt="Neural Network">
+                <p>Your model results will appear here after processing.</p>
+                {% if 'last_processed' in session %}
+                    <div class="last-processed">
+                        <h3>Last Processed:</h3>
+                        <p><strong>File:</strong> {{ session['last_processed']['filename'] }}</p>
+                        <p><strong>Model Type:</strong> {{ session['last_processed']['model_type'] }}</p>
+                        <a href="{{ url_for('download_model') }}" class="btn btn-download">Download Model</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
